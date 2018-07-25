@@ -1,0 +1,148 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Application Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register all of the routes for an application.
+| It's a breeze. Simply tell Laravel the URIs it should respond to
+| and give it the controller to call when that URI is requested.
+|
+*/
+//Route::group(['middleware' => ['web']], function () {
+Route::get('/', function () {
+    return view('auth.login');
+});
+
+/* Route::get('/home', function () {
+    return view('admin.admin_layout');
+}); */
+Route::group(array('middleware' =>'auth'), function()
+{ 
+Route::get('home', 'AdminController@create');
+
+Route::resource('product', 'ProductController');
+Route::resource('jobs', 'jobs');
+Route::resource('terms_and_condition', 'terms_and_condition');
+Route::get(
+'jobs/{job_id}/delete',['uses'=>'jobs@delet_job',
+'as'=>'jobs.delete']
+);
+Route::get(
+'/terms',['uses'=>'terms_and_condition@index',
+'as'=>'terms_and_condition.index']
+);
+Route::get(
+'/terms/create',['uses'=>'terms_and_condition@create',
+'as'=>'terms_and_condition.create']
+);
+Route::post(
+'/terms/create',['uses'=>'terms_and_condition@store',
+'as'=>'terms_and_condition.create']
+);
+
+Route::get(
+'/terms/{term_id}/edit',['uses'=>'terms_and_condition@edit',
+'as'=>'terms_and_condition.edit']
+);
+Route::post(
+'/terms/Update',['uses'=>'terms_and_condition@update',
+'as'=>'terms_and_condition.update']
+);
+Route::get(
+'/terms/{term_id}/delete',['uses'=>'terms_and_condition@delete_job',
+'as'=>'terms_and_condition.delete']
+);
+Route::post(
+'/pdf/Upload',['uses'=>'pdf_upload@create',
+'as'=>'pdf.upload.post']
+);
+Route::get(
+'/pdf/Upload',['uses'=>'pdf_upload@index',
+'as'=>'pdf.upload']
+);
+Route::post(
+'/loginx',['uses'=>'Admincontroller@post_login',
+'as'=>'loginx.post']
+);
+Route::get(
+'/loginx',['uses'=>'Admincontroller@show_login',
+'as'=>'loginx']
+);
+Route::get(
+'/work',['uses'=>'Workcontroller@index',
+'as'=>'Work.list']
+);
+Route::get(
+'/work/{work_id}/delete',['uses'=>'Workcontroller@delete_job',
+'as'=>'Work.delete']
+);
+Route::get(
+'/work/{work_id}/show',['uses'=>'Workcontroller@show',
+'as'=>'Work.show']
+);
+Route::get(
+'/profile',['uses'=>'AdminProfile@index',
+'as'=>'profile.index']
+);
+Route::post(
+'/profile',['uses'=>'AdminProfile@store',
+'as'=>'profile.post']
+);
+
+//Route For User Mangement
+Route::get(
+'/usermanagement',['uses'=>'UserManagement@index',
+'as'=>'usermanagement.list']
+);
+Route::get(
+'/usermanagement/{user_id}/edit',['uses'=>'UserManagement@edit',
+'as'=>'usermanagement.edit']
+);
+Route::post(
+'/usermanagement/update',['uses'=>'UserManagement@update',
+'as'=>'usermanagement.update']
+);
+
+/*******************************************************/
+
+
+
+
+});
+
+
+
+
+Route::group(array('before' =>'auth'), function()
+{
+Route::get('/login',[
+	'uses'=>'AdminController@index',
+	'as'=>'login',
+
+]);
+Route::post('/admin/login',[
+	'uses'=>'AdminController@postlogin',
+	'as'=>'admin.login.post',
+
+]);
+});
+
+Route::get('/admin/logout',[
+	'uses'=>'AdminController@getlogout',
+	'as'=>'admin.logout',
+
+]);
+
+
+
+//});
+
+
+
+
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
